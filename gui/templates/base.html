@@ -1,0 +1,25 @@
+{% load static %}
+<html>
+  <head>
+    <link rel="stylesheet"  type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet"  type="text/css" href="{% static 'css/gui.css' %}"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="{% static 'js/base.js' %}"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand" href="#">PerfectExtractor</a>
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+ #download {
+     display: none;
+ }
+ #preview {
+     display: none;
+     margin-top: 40px;
+ }
+ .preview-entry {
+     border:1px solid #bbb;
+     margin-bottom: 10px;
+ }
+ .preview-metadata {
+     background: #ecf6ff;
+     padding: 10px;
+ }
+ .preview-metadata span {
+     margin-left: 20px;
+ }
+ .preview-metadata span:first-child {
+     margin-left: 0;
+ }
+ .preview-text {
+     padding: 10px;
+ }
+</style>
+
+<div>
+  Processed <span class="processed">0</span> files out of <span class="total">-</span>
+</div>
+<div class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+</div>
+
+<a class="btn btn-primary" id="download" href="#">Download</a>
+<div id="preview">
+    <h3>Preview</h3>
+</div>
+<script>
+ function done() {
+     clearInterval(interval);
+     document.querySelector('.progress').style.display = 'none';
+     var downloadBtn = document.getElementById('download');
+     downloadBtn.href = '{% url 'download' task_id %}';
+     downloadBtn.style.display = 'inline';
+
+     miniXhr('get', '{% url 'peek' task_id %}',
+             function(response) {
+                 var lines = [];
+                 response.head.forEach(function(line) {
+                     var type = line['type en'];
+                     var words = line['words en'];
+                     var wordsRe = new RegExp('\\b' + words + '\\b');
+                     lines.push('<div class="preview-entry"><div class="preview-metadata">');
+                     lines.push('<span>Document: ' + line.document + '</span>');
+                     lines.push('<span>Sentence: ' + line.sentence + '</span>');
+                     lines.push('<span>Type: ' + type + '</span>');
+                     lines.push('<span>Words: ' + words + '</span>');
+                     lines.push('</div><div class="preview-text">');
+                     lines.push(line.en.replace(wordsRe, '<strong>' + words + '</strong>'));
+                     lines.push('</div><div class="preview-text">');
+                     lines.push(line.nl);
+                     lines.push('</div></div>');
+                 });
+                 document.getElementById('preview').style.display = 'block';
+                 document.getElementById('preview').innerHTML += lines.join('');
+     });
+ }
+
+ function checkStatus() {
+     miniXhr('get', '{% url 'status' task_id %}',
+             function(response) {
+                 if (response.status && response.status.total > 0) {
+                     if (response.status.progress == response.status.total) done();
+
+                     var status = response.status;
+                     var percent = status.progress / status.total * 100;
+                     document.querySelector('.progress-bar').style.width = percent + '%';
+                     document.querySelector('.processed').innerText = status.progress;
+                     document.querySelector('.total').innerText = status.total;
+                 }
+     });
+ }
+
+ var interval = setInterval(checkStatus, 1000);
+</script>
+{% endblock %}

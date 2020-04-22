@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<style>
+ #id_data_source li {
+     list-style:none;
+ }
+</style>
+
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                {{field.label}}: {{ error|escape }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ error|escape }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form action="{% url 'run' %}" method="post" enctype="multipart/form-data">
+  <div class="row">
+    {% with field=form.corpus %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+    {% with field=form.extractor %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+    {% with field=form.pos %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+    {% with field=form.lemmata %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+  </div>
+  <div class="row">
+    {% with field=form.data_source %}
+    <div class="col-md-3">
+        <label for="{{field.id_for_label}}">{{field.label}}</label>
+        <div>
+          {{field}}
+        </div>
+    </div>
+    {% endwith %}
+  </div>
+  <div class="row">
+    {% with field=form.path %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+    {% with field=form.alignment %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+  </div>
+  <div class="row">
+    {% with field=form.upload %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{field}}
+        </div>
+        </div>
+    {% endwith %}
+  </div>
+  <h5>Limit Results</h5>
+  <div class="row">
+    {% with field=form.file_limit %}
+        <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{field|add_class:"form-control"}}
+        </div>
+        </div>
+    {% endwith %}
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="submit" class="btn btn-lg btn-primary" value="Run" />
+      </div>
+    </div>
+  </div>
+  {% csrf_token %}
+</form>
+{% endblock %}
