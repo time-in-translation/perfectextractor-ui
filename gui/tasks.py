@@ -1,5 +1,4 @@
 from multiprocessing import Process
-from functools import partial
 
 from .models import Task
 
@@ -14,6 +13,9 @@ class TaskProcess:
         self._process = Process(target=self._run)
         self._process.start()
 
+    def cancel(self):
+        self._process.kill()
+
     def is_alive(self):
         return self._process.is_alive()
 
@@ -25,17 +27,25 @@ class TaskProcess:
         t.status = status
         t.save()
 
+
 class TaskController:
+    def __init__(self):
+        self._processes = {}
+
     def add(self, func, args):
         t = Task.objects.create()
         t.save()
         p = TaskProcess(t.pk, func, args)
+        self._processes[t.pk] = p
         p.start()
         return t.pk
 
     def monitor(self, task_id):
         t = Task.objects.get(pk=task_id)
         return t.status
+
+    def cancel(self, task_id):
+        self._processes[task_id].cancel()
 
 
 tasks = TaskController()

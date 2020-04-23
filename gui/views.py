@@ -72,3 +72,8 @@ def download(request, task_id):
     response = HttpResponse(contents, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=results.csv'
     return response
+
+
+def cancel(request, task_id):
+    tasks.cancel(task_id)
+    return JsonResponse(dict(success=True))

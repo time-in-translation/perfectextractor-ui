@@ -33,6 +33,7 @@
 <div class="progress">
     <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
 </div>
+<a class="btn btn-danger" id="cancel" href="#">Cancel</a>
 
 <a class="btn btn-primary" id="download" href="#">Download</a>
 <div id="preview">
@@ -46,6 +47,7 @@
      downloadBtn.href = '{% url 'download' task_id %}';
      downloadBtn.style.display = 'inline';
 
+     document.getElementById('cancel').disabled = true;
      miniXhr('get', '{% url 'peek' task_id %}',
              function(response) {
                  var lines = [];
@@ -84,6 +86,11 @@
      });
  }
 
+ function cancel() {
+     miniXhr('get', '{% url 'cancel' task_id%}', function(response) {done()});
+ }
+
  var interval = setInterval(checkStatus, 1000);
+ document.getElementById('cancel').addEventListener('click', cancel);
 </script>
 {% endblock %}
