@@ -38,6 +38,7 @@
 <a class="btn btn-primary" id="download" href="#">Download</a>
 <div id="preview">
     <h3>Preview</h3>
+    <div id="preview_content"></div>
 </div>
 <script>
  function done() {
@@ -48,6 +49,9 @@
      downloadBtn.style.display = 'inline';
 
      document.getElementById('cancel').disabled = true;
+ }
+
+ function peek() {
      miniXhr('get', '{% url 'peek' task_id %}',
              function(response) {
                  var lines = [];
@@ -67,7 +71,7 @@
                      lines.push('</div></div>');
                  });
                  document.getElementById('preview').style.display = 'block';
-                 document.getElementById('preview').innerHTML += lines.join('');
+                 document.getElementById('preview_content').innerHTML = lines.join('');
      });
  }
 
@@ -75,6 +79,7 @@
      miniXhr('get', '{% url 'status' task_id %}',
              function(response) {
                  if (response.status && response.status.total > 0) {
+                     if (response.status.progress > 0) peek();
                      if (response.status.progress == response.status.total) done();
 
                      var status = response.status;
