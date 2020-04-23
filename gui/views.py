@@ -38,7 +38,7 @@ def run(request):
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile
         kwargs['file_limit'] = form.cleaned_data.get('file_limit', 0)
-        extractor = resolve_extractor(form.cleaned_data['extractor'])('en', ['nl'], **kwargs)
+        extractor = resolve_extractor(form.cleaned_data['extractor'])('en', form.cleaned_data['alignment'], **kwargs)
 
         path = form.cleaned_data['path']
         task_id = tasks.add(run_task, (extractor, path))
