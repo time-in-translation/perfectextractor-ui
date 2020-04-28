@@ -2,6 +2,10 @@ from django import forms
 from django.conf import settings
 
 
+class MultipleFilePathField(forms.MultipleChoiceField, forms.FilePathField):
+    pass
+
+
 class MainForm(forms.Form):
     corpus = forms.ChoiceField(choices=[
         ('europarl', 'europarl'),
@@ -15,9 +19,7 @@ class MainForm(forms.Form):
 
     pos = forms.CharField(required=False, label='Part-of-speech tag')
     lemmata = forms.CharField(required=False)
-    alignment = forms.MultipleChoiceField(choices=[
-        ('en', 'en'),
-        ('nl', 'nl'),
-        ('fr', 'fr')])
+    alignment = MultipleFilePathField(path=settings.PE_DATA_PATH, allow_files=False, allow_folders=True,
+                                      widget=forms.SelectMultiple)
 
     file_limit = forms.IntegerField(required=False, label='Limit search to X files', initial=25)

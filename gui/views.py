@@ -1,5 +1,6 @@
 import csv
 import tempfile
+import os
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
@@ -38,7 +39,8 @@ def run(request):
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile
         kwargs['file_limit'] = form.cleaned_data.get('file_limit', 0)
-        extractor = resolve_extractor(form.cleaned_data['extractor'])('en', form.cleaned_data['alignment'], **kwargs)
+        alignment = [os.path.basename(path) for path in form.cleaned_data['alignment']]
+        extractor = resolve_extractor(form.cleaned_data['extractor'])('en', alignment, **kwargs)
 
         path = form.cleaned_data['path']
         task_id = tasks.add(run_task, (extractor, path))
