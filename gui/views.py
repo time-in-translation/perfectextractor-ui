@@ -33,8 +33,10 @@ def run(request):
     if form.is_valid():
         kwargs = dict()
         for key in ['pos', 'lemmata']:
-            if form.cleaned_data[key]:
-                kwargs[key] = form.cleaned_data[key].split()
+            entries = form.cleaned_data[key]
+            if not isinstance(entries, list):
+                entries = [entries]
+            kwargs[key] = [entry for entry in entries if entry]
 
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile

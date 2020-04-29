@@ -8,6 +8,7 @@
  }
 </style>
 
+
 {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}
@@ -23,52 +24,25 @@
     {% endfor %}
 {% endif %}
 
-<form action="{% url 'run' %}" method="post" enctype="multipart/form-data">
+<form action="{% url 'run' %}" method="post">
+  <h5>Data Source</h5>
   <div class="row">
     {% with field=form.corpus %}
-        <div class="col-md-3">
-        <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
-        </div>
-        </div>
-    {% endwith %}
-    {% with field=form.extractor %}
-        <div class="col-md-3">
-        <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
-        </div>
-        </div>
-    {% endwith %}
-    {% with field=form.pos %}
-        <div class="col-md-3">
-        <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
-        </div>
-        </div>
-    {% endwith %}
-    {% with field=form.lemmata %}
-        <div class="col-md-3">
-        <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
-        </div>
-        </div>
-    {% endwith %}
-  </div>
-  <div class="row">
-    {% with field=form.data_source %}
     <div class="col-md-3">
-        <label for="{{field.id_for_label}}">{{field.label}}</label>
-        <div>
-          {{field}}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
         </div>
     </div>
     {% endwith %}
-  </div>
-  <div class="row">
+    {% with field=form.extractor %}
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+        </div>
+    </div>
+    {% endwith %}
     {% with field=form.path %}
         <div class="col-md-3">
         <div class="form-group">
@@ -86,17 +60,28 @@
         </div>
     {% endwith %}
   </div>
+  <h5>Query</h5>
   <div class="row">
-    {% with field=form.upload %}
+    {% with field=form.pos %}
         <div class="col-md-3">
         <div class="form-group">
+          <button class="float-right btn btn-sm btn-primary add">+</button>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{field}}
+            {{ field|add_class:"form-control" }}
+        </div>
+        </div>
+    {% endwith %}
+    {% with field=form.lemmata %}
+        <div class="col-md-3">
+        <div class="form-group">
+          <button class="float-right btn btn-sm btn-primary add">+</button>
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
         </div>
         </div>
     {% endwith %}
   </div>
-  <h5>Limit Results</h5>
+  <h5>Options</h5>
   <div class="row">
     {% with field=form.file_limit %}
         <div class="col-md-3">
@@ -116,4 +101,18 @@
   </div>
   {% csrf_token %}
 </form>
+
+<script>
+ function duplicateField(event) {
+     var field = event.target.parentNode.querySelector('input');
+     var clone = field.cloneNode();
+     clone.value = '';
+     field.parentNode.appendChild(clone);
+     event.preventDefault();
+ }
+
+ document.querySelectorAll('button.add').forEach(function(button) {
+     button.addEventListener('click', duplicateField);
+ });
+</script>
 {% endblock %}
