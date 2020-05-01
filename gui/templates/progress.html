@@ -25,6 +25,9 @@
  .preview-text {
      padding: 10px;
  }
+ #no_results {
+     display: none;
+ }
 </style>
 
 <div>
@@ -40,7 +43,16 @@
     <h3>Preview</h3>
     <div id="preview_content"></div>
 </div>
+<div id="no_results">
+  Your query and search settings have produced no results.
+</div>
 <script>
+ function noResults() {
+     document.getElementById('no_results').style.display = 'block';
+     document.getElementById('download').style.display = 'none';
+     document.getElementById('cancel').style.display = 'none';
+ }
+
  function done() {
      clearInterval(interval);
      document.querySelector('.progress').style.display = 'none';
@@ -49,9 +61,10 @@
      downloadBtn.style.display = 'inline';
 
      document.getElementById('cancel').disabled = true;
+     peek(true);
  }
 
- function peek() {
+ function peek(lastPeek) {
      miniXhr('get', '{% url 'peek' task_id %}',
              function(response) {
                  var lines = [];
@@ -70,8 +83,14 @@
                      lines.push(line.nl);
                      lines.push('</div></div>');
                  });
-                 document.getElementById('preview').style.display = 'block';
-                 document.getElementById('preview_content').innerHTML = lines.join('');
+
+                 if (lastPeek && !lines.length) {
+                     noResults();
+                 }
+                 else if (lines.length) {
+                    document.getElementById('preview').style.display = 'block';
+                    document.getElementById('preview_content').innerHTML = lines.join('');
+                 }
      });
  }
 

@@ -59,8 +59,16 @@ def status(request, task_id):
 def csv_to_records(path, limit=10, delimiter=';'):
     with open(path, 'r', encoding='utf-8-sig') as f:
         reader = iter(csv.reader(f, delimiter=delimiter))
-        headers = next(reader)
-        data = [next(reader) for i in range(limit)]
+        try:
+            headers = next(reader)
+        except StopIteration:
+            return []
+
+        data = []
+        try:
+            data = [next(reader) for i in range(limit)]
+        except StopIteration:
+            pass
         return [dict((headers[i], line[i]) for i in range(len(line))) for line in data]
 
 
