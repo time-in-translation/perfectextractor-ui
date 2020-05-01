@@ -1,0 +1,2 @@
+recursive-include perfectextractor_ui/static *
+recursive-include perfectextractor_ui/templates *

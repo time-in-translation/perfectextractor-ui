@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-    'gui'
+    'perfectextractor_ui'
 ]
 
 MIDDLEWARE = [
@@ -38,7 +38,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'gui.urls'
+ROOT_URLCONF = 'perfectextractor_ui.urls'
 
 TEMPLATES = [
     {
@@ -56,7 +56,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'gui.wsgi.application'
+WSGI_APPLICATION = 'perfectextractor_ui.wsgi.application'
 
 
 # Database
