@@ -1,3 +1,4 @@
+from django import db
 from multiprocessing import Process
 
 from .models import Task
@@ -23,6 +24,8 @@ class TaskProcess:
         self._target(self._cb, *self._args)
 
     def _cb(self, status):
+        # when using mysql, we need to reconnect because this is running in a new process
+        db.close_old_connections()
         t = Task.objects.get(pk=self._task_id)
         t.status = status
         t.save()
