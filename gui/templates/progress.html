@@ -65,12 +65,14 @@
  }
 
  function peek(lastPeek) {
+     var sourceLanguage = '{{source}}';
+     var targetLanguages = [{% for language in alignment %}'{{language}}',{% endfor %}];
      miniXhr('get', '{% url 'peek' task_id %}',
              function(response) {
                  var lines = [];
                  response.head.forEach(function(line) {
-                     var type = line['type en'];
-                     var words = line['words en'];
+                     var type = line['type ' + sourceLanguage];
+                     var words = line['words ' + sourceLanguage];
                      var wordsRe = new RegExp('\\b' + words + '\\b');
                      lines.push('<div class="preview-entry"><div class="preview-metadata">');
                      lines.push('<span>Document: ' + line.document + '</span>');
@@ -78,10 +80,13 @@
                      lines.push('<span>Type: ' + type + '</span>');
                      lines.push('<span>Words: ' + words + '</span>');
                      lines.push('</div><div class="preview-text">');
-                     lines.push(line.en.replace(wordsRe, '<strong>' + words + '</strong>'));
-                     lines.push('</div><div class="preview-text">');
-                     lines.push(line.nl);
-                     lines.push('</div></div>');
+                     lines.push(line[sourceLanguage].replace(wordsRe, '<strong>' + words + '</strong>'));
+                     lines.push('</div>');
+                     targetLanguages.forEach(function(language) {
+                         lines.push('<div class="preview-text">');
+                         lines.push(line[language]);
+                         lines.push('</div></div>');
+                     });
                  });
 
                  if (lastPeek && !lines.length) {

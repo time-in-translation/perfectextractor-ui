@@ -41,13 +41,16 @@ def run(request):
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile
         kwargs['file_limit'] = form.cleaned_data.get('file_limit', 0)
+        source = os.path.basename(form.cleaned_data['path'])
         alignment = [os.path.basename(path) for path in form.cleaned_data['alignment']]
-        extractor = resolve_extractor(form.cleaned_data['extractor'])('en', alignment, **kwargs)
+        extractor = resolve_extractor(form.cleaned_data['extractor'])(source, alignment, **kwargs)
 
         path = form.cleaned_data['path']
         task_id = tasks.add(run_task, (extractor, path))
         Task.objects.filter(pk=task_id).update(outfile=outfile)
-        return render(request, 'progress.html', dict(task_id=task_id))
+        return render(request, 'progress.html', dict(task_id=task_id,
+                                                     source=source,
+                                                     alignment=alignment))
     else:
         return render(request, 'home.html', dict(form=form))
 
