@@ -5,14 +5,20 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
 from .forms import MainForm
-from .models import Task
+from .models import Corpus, Task
 from .tasks import tasks
 from perfectextractor.corpora.europarl.extractor import EuroparlPerfectExtractor, EuroparlPoSExtractor
 
 
 def home(request):
-    form = MainForm()
-    return render(request, 'home.html', dict(form=form))
+    corpus = None
+    if 'corpus' in request.GET:
+        try:
+            corpus = Corpus.objects.get(pk=request.GET['corpus'])
+        except Corpus.DoesNotExist:
+            pass
+    form = MainForm(corpus=corpus)
+    return render(request, 'home.html', dict(corpus=corpus, form=form))
 
 
 def run_task(result_cb, extractor, path):
@@ -29,7 +35,7 @@ def resolve_extractor(extractor):
 
 
 def run(request):
-    form = MainForm(request.POST, request.FILES)
+    form = MainForm(request.POST)
     if form.is_valid():
         kwargs = dict()
         for key in ['pos', 'lemmata']:
@@ -41,11 +47,13 @@ def run(request):
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile
         kwargs['file_limit'] = form.cleaned_data.get('file_limit', 0)
-        source = os.path.basename(form.cleaned_data['path'])
+
+        corpus = form.cleaned_data['corpus']
+        source = form.cleaned_data['source']
         alignment = [os.path.basename(path) for path in form.cleaned_data['alignment']]
         extractor = resolve_extractor(form.cleaned_data['extractor'])(source, alignment, **kwargs)
 
-        path = form.cleaned_data['path']
+        path = os.path.join(corpus.path, source)
         task_id = tasks.add(run_task, (extractor, path))
         Task.objects.filter(pk=task_id).update(outfile=outfile)
         return render(request, 'progress.html', dict(task_id=task_id,

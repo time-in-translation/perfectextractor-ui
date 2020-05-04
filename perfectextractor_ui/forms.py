@@ -1,9 +1,7 @@
 from django import forms
 from django.conf import settings
 
-
-class MultipleFilePathField(forms.MultipleChoiceField, forms.FilePathField):
-    pass
+from .models import Corpus
 
 
 class PossiblyMultipleTextInput(forms.TextInput):
@@ -30,19 +28,27 @@ class PossiblyMultipleCharField(forms.CharField):
 
 
 class MainForm(forms.Form):
-    corpus = forms.ChoiceField(choices=[
-        ('europarl', 'europarl'),
-        ('bnc', 'bnc'),
-        ('dpc', 'dpc')])
+    corpus = forms.ModelChoiceField(Corpus.objects.all())
     extractor = forms.ChoiceField(choices=[
         ('pos', 'pos'),
         ('perfect', 'perfect')])
-    path = forms.FilePathField(label='Source',
-                               path=settings.PE_DATA_PATH, allow_files=False, allow_folders=True)
-
     pos = PossiblyMultipleCharField(required=False, label='Part-of-speech tag')
     lemmata = PossiblyMultipleCharField(required=False)
-    alignment = MultipleFilePathField(path=settings.PE_DATA_PATH, allow_files=False, allow_folders=True,
-                                      widget=forms.SelectMultiple)
 
     file_limit = forms.IntegerField(required=False, label='Limit search to X files', initial=25)
+
+    def __init__(self, *args, **kwargs):
+        corpus = kwargs.pop('corpus') if 'corpus' in kwargs else None
+        super().__init__(*args, **kwargs)
+        if corpus:
+            self.fields['corpus'].initial = corpus
+            self.fields['alignment'] = forms.MultipleChoiceField(choices=zip(corpus.sources, corpus.sources))
+            self.fields['source'] = forms.ChoiceField(choices=zip(corpus.sources, corpus.sources))
+        elif self.is_bound:
+            corpus = self.clean_field('corpus')
+            self.fields['alignment'] = forms.MultipleChoiceField(choices=zip(corpus.sources, corpus.sources))
+            self.fields['source'] = forms.ChoiceField(choices=zip(corpus.sources, corpus.sources))
+
+    def clean_field(self, field):
+        value = self.fields[field].widget.value_from_datadict(self.data, self.files, self.add_prefix(field))
+        return self.fields[field].clean(value)
