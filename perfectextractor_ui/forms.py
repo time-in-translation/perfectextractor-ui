@@ -36,6 +36,10 @@ class MainForm(forms.Form):
     lemmata = PossiblyMultipleCharField(required=False)
 
     file_limit = forms.IntegerField(required=False, label='Limit search to X files', initial=25)
+    output_format = forms.ChoiceField(choices=[
+        ('txt', 'Text'),
+        ('xml', 'XML')],
+        help_text='Choose XML if the output is to be imported in TimeAlign')
 
     def __init__(self, *args, **kwargs):
         corpus = kwargs.pop('corpus') if 'corpus' in kwargs else None

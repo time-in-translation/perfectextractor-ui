@@ -28,6 +28,9 @@
  #no_results {
      display: none;
  }
+ #xml_no_preview {
+     display: none;
+ }
 </style>
 
 <div>
@@ -46,11 +49,18 @@
 <div id="no_results">
   Your query and search settings have produced no results.
 </div>
+<div id="xml_no_preview">
+  Preview is currently unavailable when using the XML output format.
+</div>
 <script>
  function noResults() {
      document.getElementById('no_results').style.display = 'block';
      document.getElementById('download').style.display = 'none';
      document.getElementById('cancel').style.display = 'none';
+ }
+
+ function xmlNoPreview() {
+     document.getElementById('xml_no_preview').style.display = 'block';
  }
 
  function done() {
@@ -67,6 +77,13 @@
  function peek(lastPeek) {
      var sourceLanguage = '{{source}}';
      var targetLanguages = [{% for language in alignment %}'{{language}}',{% endfor %}];
+     var outputFormat = '{{output_format}}';
+
+     if (outputFormat == 'xml') {
+         xmlNoPreview();
+         return;
+     }
+
      miniXhr('get', '{% url 'peek' task_id %}',
              function(response) {
                  var lines = [];

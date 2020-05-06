@@ -47,6 +47,7 @@ def run(request):
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile
         kwargs['file_limit'] = form.cleaned_data.get('file_limit', 0)
+        kwargs['output'] = form.cleaned_data.get('output_format')
 
         corpus = form.cleaned_data['corpus']
         source = form.cleaned_data['source']
@@ -58,6 +59,7 @@ def run(request):
         Task.objects.filter(pk=task_id).update(outfile=outfile)
         return render(request, 'progress.html', dict(task_id=task_id,
                                                      source=source,
+                                                     output_format=kwargs['output'],
                                                      alignment=alignment))
     else:
         return render(request, 'home.html', dict(form=form))
