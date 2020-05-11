@@ -1,8 +1,10 @@
 import csv
 import tempfile
 import os
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
+from django.forms import ValidationError
 
 from .forms import MainForm
 from .models import Corpus, Task
@@ -12,7 +14,7 @@ from perfectextractor.corpora.europarl.extractor import EuroparlPerfectExtractor
 
 def home(request):
     corpus = None
-    if 'corpus' in request.GET:
+    if 'corpus' in request.GET and request.GET['corpus']:
         try:
             corpus = Corpus.objects.get(pk=request.GET['corpus'])
         except Corpus.DoesNotExist:
@@ -30,19 +32,38 @@ def run_task(result_cb, extractor, path):
 
 def resolve_extractor(extractor):
     return {
-        'pos': EuroparlPoSExtractor,
-        'perfect': EuroparlPerfectExtractor}[extractor]
+        'pos': (EuroparlPoSExtractor, {'pos', 'lemmata'}),
+        'perfect': (EuroparlPerfectExtractor, {})}[extractor]
+
+
+def prepare_query(form, arguments):
+    known_arguments = ['pos', 'lemmata']
+
+    kwargs = dict()
+    any_error = False
+    for key in known_arguments:
+        if form.cleaned_data[key] and key not in arguments:
+            form.add_error(key, 'field is not supported by the chosen extractor')
+            any_error = True
+        elif key in arguments:
+            entries = form.cleaned_data[key]
+            if not isinstance(entries, list):
+                entries = [entries]
+            kwargs[key] = [entry for entry in entries if entry]
+
+    if any_error:
+        return dict(), False
+    return kwargs, True
 
 
 def run(request):
     form = MainForm(request.POST)
     if form.is_valid():
-        kwargs = dict()
-        for key in ['pos', 'lemmata']:
-            entries = form.cleaned_data[key]
-            if not isinstance(entries, list):
-                entries = [entries]
-            kwargs[key] = [entry for entry in entries if entry]
+        extractor, query_arguments = resolve_extractor(form.cleaned_data['extractor'])
+
+        kwargs, ok = prepare_query(form, query_arguments)
+        if not ok:
+            return render(request, 'home.html', dict(corpus=form.cleaned_data['corpus'], form=form))
 
         outfile = tempfile.mktemp()
         kwargs['outfile'] = outfile
@@ -52,7 +73,7 @@ def run(request):
         corpus = form.cleaned_data['corpus']
         source = form.cleaned_data['source']
         alignment = [os.path.basename(path) for path in form.cleaned_data['alignment']]
-        extractor = resolve_extractor(form.cleaned_data['extractor'])(source, alignment, **kwargs)
+        extractor = extractor(source, alignment, **kwargs)
 
         path = os.path.join(corpus.path, source)
         task_id = tasks.add(run_task, (extractor, path))

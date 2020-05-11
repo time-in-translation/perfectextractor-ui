@@ -12,6 +12,10 @@ class PossiblyMultipleTextInput(forms.TextInput):
             getter = data.get
         return getter(name)
 
+    def format_value(self, value):
+        if value is not None:
+            return ','.join(value)
+
 
 class PossiblyMultipleCharField(forms.CharField):
     def __init__(self, *args, **kwargs):
@@ -19,6 +23,8 @@ class PossiblyMultipleCharField(forms.CharField):
         super().__init__(*args, **kwargs)
 
     def to_python(self, value):
+        if value == ['']:
+            return None
         if isinstance(value, list):
             out = []
             for part in value:

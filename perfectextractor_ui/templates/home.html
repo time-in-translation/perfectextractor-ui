@@ -69,7 +69,7 @@
         <div class="form-group">
           <button class="float-right btn btn-sm btn-primary add">+</button>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
+            {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>
         </div>
     {% endwith %}
@@ -78,7 +78,7 @@
         <div class="form-group">
           <button class="float-right btn btn-sm btn-primary add">+</button>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
+            {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>
         </div>
     {% endwith %}
@@ -114,21 +114,37 @@
 </form>
 
 <script>
- function duplicateField(event) {
-     var field = event.target.parentNode.querySelector('input');
-     var clone = field.cloneNode();
-     clone.value = '';
-     field.parentNode.appendChild(clone);
+ function addFieldEvent(event) {
+     var element = event.target.parentNode.querySelector('input');
+     duplicateField(element, '');
      event.preventDefault();
+ }
+ function duplicateField(element, value) {
+     var clone = element.cloneNode();
+     clone.value = value;
+     element.parentNode.appendChild(clone);
  }
 
  document.querySelectorAll('button.add').forEach(function(button) {
-     button.addEventListener('click', duplicateField);
+     button.addEventListener('click', addFieldEvent);
  });
 
  document.getElementById('id_corpus').addEventListener('change', function(event) {
      var loc = window.location.href;
      window.location.href = loc.substring(0, loc.indexOf('?')) + '?corpus=' + event.target.value;
  });
+
+ function parseListFields() {
+     document.querySelectorAll('.maybe-list').forEach(function(element) {
+         var tryParse = element.value.split(',');
+         if(typeof(tryParse) === 'object') {
+             element.value = tryParse.pop();
+             tryParse.forEach(function(value) {
+                 duplicateField(element, value);
+             });
+         }
+     });
+ }
+ parseListFields();
 </script>
 {% endblock %}
