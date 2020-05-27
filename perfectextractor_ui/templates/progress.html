@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% block content %}
 <style>
  #download {
@@ -53,6 +53,12 @@
   Preview is currently unavailable when using the XML output format.
 </div>
 <script>
+ if (typeof(miniXhr) === 'undefined' && typeof(jQuery) !== 'undefined') {
+     window.miniXhr = function (method, url, callback) {
+         jQuery.ajax(url, {method: method, success:callback});
+     }
+ }
+
  function noResults() {
      document.getElementById('no_results').style.display = 'block';
      document.getElementById('download').style.display = 'none';
@@ -67,7 +73,7 @@
      clearInterval(interval);
      document.querySelector('.progress').style.display = 'none';
      var downloadBtn = document.getElementById('download');
-     downloadBtn.href = '{% url 'download' task_id %}';
+     downloadBtn.href = '{% url 'perfectextractor_ui:download' task_id %}';
      downloadBtn.style.display = 'inline';
 
      document.getElementById('cancel').disabled = true;
@@ -84,7 +90,7 @@
          return;
      }
 
-     miniXhr('get', '{% url 'peek' task_id %}',
+     miniXhr('get', '{% url 'perfectextractor_ui:peek' task_id %}',
              function(response) {
                  var lines = [];
                  response.head.forEach(function(line) {
@@ -117,7 +123,7 @@
  }
 
  function checkStatus() {
-     miniXhr('get', '{% url 'status' task_id %}',
+     miniXhr('get', '{% url 'perfectextractor_ui:status' task_id %}',
              function(response) {
                  if (response.status && response.status.total > 0) {
                      if (response.status.progress > 0) peek();
@@ -133,7 +139,7 @@
  }
 
  function cancel() {
-     miniXhr('get', '{% url 'cancel' task_id%}', function(response) {done()});
+     miniXhr('get', '{% url 'perfectextractor_ui:cancel' task_id%}', function(response) {done()});
  }
 
  var interval = setInterval(checkStatus, 1000);

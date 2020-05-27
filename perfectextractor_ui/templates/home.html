@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% load widget_tweaks %}
 
 {% block content %}
@@ -8,7 +8,7 @@
  }
 </style>
 
-
+<h1>Run Extraction</h1>
 {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}
@@ -24,8 +24,8 @@
     {% endfor %}
 {% endif %}
 
-<form action="{% url 'run' %}" method="post">
-  <h5>Data Source</h5>
+<form action="{% url 'perfectextractor_ui:run' %}" method="post">
+  <h4>Data Source</h4>
   <div class="row">
     {% with field=form.corpus %}
     <div class="col-md-3">
@@ -62,7 +62,7 @@
     {% endwith %}
     {% endif %}
   </div>
-  <h5>Query</h5>
+  <h4>Query</h4>
   <div class="row">
     {% with field=form.pos %}
         <div class="col-md-3">
@@ -83,7 +83,7 @@
         </div>
     {% endwith %}
   </div>
-  <h5>Options</h5>
+  <h4>Options</h4>
   <div class="row">
     {% with field=form.file_limit %}
         <div class="col-md-3">

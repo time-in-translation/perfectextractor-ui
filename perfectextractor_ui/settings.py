@@ -38,7 +38,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'perfectextractor_ui.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {

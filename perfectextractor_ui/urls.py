@@ -5,6 +5,7 @@ from django.urls import path
 
 from . import views
 
+app_name = 'perfectextractor_ui'
 urlpatterns = [
     path('', views.home, name='home'),
     path('run', views.run, name='run'),
