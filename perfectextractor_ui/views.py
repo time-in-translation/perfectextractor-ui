@@ -34,12 +34,12 @@ def run_task(result_cb, extractor, path):
 
 def resolve_extractor(extractor):
     return {
-        'pos': (EuroparlPoSExtractor, {'pos', 'lemmata'}),
+        'pos': (EuroparlPoSExtractor, {'pos', 'lemmata', 'regex'}),
         'perfect': (EuroparlPerfectExtractor, {})}[extractor]
 
 
 def prepare_query(form, arguments):
-    known_arguments = ['pos', 'lemmata']
+    known_arguments = ['pos', 'lemmata', 'regex']
 
     kwargs = dict()
     any_error = False

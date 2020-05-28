@@ -40,6 +40,7 @@ class MainForm(forms.Form):
         ('perfect', 'perfect')])
     pos = PossiblyMultipleCharField(required=False, label='Part-of-speech tag')
     lemmata = PossiblyMultipleCharField(required=False)
+    regex = PossiblyMultipleCharField(required=False, label='Regular Expression')
 
     file_limit = forms.IntegerField(required=False, label='Limit search to X files', initial=25)
     output_format = forms.ChoiceField(choices=[
