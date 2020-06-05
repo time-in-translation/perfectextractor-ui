@@ -8,6 +8,9 @@
      display: none;
      margin-top: 40px;
  }
+ #back {
+     display: none;
+ }
  .preview-entry {
      border:1px solid #bbb;
      margin-bottom: 10px;
@@ -40,6 +43,7 @@
     <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
 </div>
 <a class="btn btn-danger" id="cancel" href="#">Cancel</a>
+<a class="btn btn-default" id="back" href="#">Back</a>
 
 <a class="btn btn-primary" id="download" href="#">Download</a>
 <div id="preview">
@@ -74,9 +78,9 @@
      document.querySelector('.progress').style.display = 'none';
      var downloadBtn = document.getElementById('download');
      downloadBtn.href = '{% url 'perfectextractor_ui:download' task_id %}';
-     downloadBtn.style.display = 'inline';
-
-     document.getElementById('cancel').disabled = true;
+     downloadBtn.style.display = 'inline-block';
+     document.getElementById('back').style.display = 'inline-block';
+     document.getElementById('cancel').style.display = 'none';
      peek(true);
  }
 
@@ -151,5 +155,6 @@
 
  var interval = setInterval(checkStatus, 1000);
  document.getElementById('cancel').addEventListener('click', cancel);
+ document.getElementById('back').addEventListener('click', function(){window.history.go(-1)});
 </script>
 {% endblock %}
