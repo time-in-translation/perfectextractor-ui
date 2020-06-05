@@ -59,6 +59,7 @@ class MainForm(forms.Form):
         documents = corpus.list_documents(source)
 
         alignments = corpus.sources
+        alignments.remove(source)
         self.fields['alignment'] = forms.MultipleChoiceField(choices=zip(alignments, alignments))
         self.fields['documents'] = forms.MultipleChoiceField(choices=zip(documents, documents), required=False)
 
