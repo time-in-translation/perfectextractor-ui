@@ -38,6 +38,16 @@ class Corpus(models.Model):
 
     @property
     def sources(self):
+        sources = []
         for d in os.listdir(self.path):
             if os.path.isdir(os.path.join(self.path, d)):
-                yield d
+                sources.append(d)
+
+        return sorted(sources)
+
+    def list_documents(self, language):
+        docs = []
+        for f in os.listdir(os.path.join(self.path, language)):
+            docs.append(f)
+
+        return sorted(docs)

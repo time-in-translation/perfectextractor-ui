@@ -6,6 +6,10 @@
  #id_data_source li {
      list-style:none;
  }
+
+ #id_documents {
+     height: 350px;
+ }
 </style>
 
 <h1>Run Extraction</h1>
@@ -58,6 +62,22 @@
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control" }}
         </div>
+        </div>
+    {% endwith %}
+    {% with field=form.documents %}
+        <div class="col-md-6">
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <select id="{{field.auto_id}}" name="{{field.name}}" class="form-control" multiple></select>
+        </div>
+        </div>
+        <div class="col-md-6" >
+        <div class="form-group">
+            <label for="documents_filter">Filter documents by name</label>
+            <input type="text" id="id_documents_filter" class="form-control" />
+        </div>
+        <div id="documents_filter_count"></div>
+        <div id="documents_selected_count"></div>
         </div>
     {% endwith %}
     {% endif %}
@@ -139,9 +159,80 @@
  });
 
  document.getElementById('id_corpus').addEventListener('change', function(event) {
-     var loc = window.location.href;
-     window.location.href = loc.substring(0, loc.indexOf('?')) + '?corpus=' + event.target.value;
+     setQuery('corpus', event.target.value);
  });
+
+ var sourceSelect = document.getElementById('id_source');
+ if(sourceSelect) {
+     sourceSelect.addEventListener('change', function(event) {
+         setQuery('source', event.target.value);
+     });
+ }
+
+ // manipulating an existing <select> element with many options can be quite slow.
+ // this is why I replace avoid generating a huge <select> with all options on the server,
+ // use a smaller <select> with a limit on the number of options, and ask the user to use filters.
+ var docSelect = document.getElementById('id_documents');
+ var allDocuments = {{ form.documents.field.choices | safe }};
+ var documentsFilter = document.getElementById('id_documents_filter');
+ var activeFilter = '';
+ if(documentsFilter) {
+     var limit = 100;
+     function updateOptions(options) {
+         var buffer = [];
+         for(var i=0; i<Math.min(limit, options.length); i++) {
+             buffer.push('<option value="');
+             buffer.push(options[i]);
+             buffer.push('">');
+             buffer.push(options[i]);
+             buffer.push('</option>');
+         }
+         docSelect.innerHTML = buffer.join('');
+
+         var msg = 'Found ' + allDocuments.length + ' documents, showing ' +
+                   docSelect.children.length + ' (limit: ' + limit + ').';
+         if(docSelect.children.length >= limit) {
+             msg += '<br>Please use a filter to narrow down results.';
+         }
+         document.getElementById('documents_filter_count').innerHTML = msg;
+     }
+
+     function updateSelectedCount() {
+         var selected = docSelect.querySelectorAll('option:checked');
+         if(selected.length) {
+             document.getElementById('documents_selected_count').innerHTML = '<br>Selected: ' + selected.length;
+         }
+     }
+
+     updateOptions(allDocuments.slice(0, limit));
+     documentsFilter.addEventListener('keyup', function(event) {
+         if(event.target.value !== activeFilter) {
+             activeFilter = event.target.value;
+             updateOptions(allDocuments.filter(function(doc) {
+                 return doc.indexOf(activeFilter) >= 0;
+             }));
+             updateSelectedCount();
+         }
+     });
+
+     docSelect.addEventListener('change', function(event) {
+         updateSelectedCount();
+     });
+ }
+
+ function setQuery(argument, value) {
+     var query = window.location.search.substring(1);
+     var parts = query.split('&');
+     var newQuery = [];
+     for(var i=0; i<parts.length; i++) {
+         var split = parts[i].split('=');
+         if(split[0] == argument) continue;
+         newQuery.push(parts[i]);
+     }
+
+     newQuery.push(argument + '=' + value);
+     window.location.search = '?' + newQuery.join('&');
+ }
 
  function parseListFields() {
      document.querySelectorAll('.maybe-list').forEach(function(element) {

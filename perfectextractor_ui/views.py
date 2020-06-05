@@ -21,7 +21,7 @@ def home(request):
             corpus = Corpus.objects.get(pk=request.GET['corpus'])
         except Corpus.DoesNotExist:
             pass
-    form = MainForm(corpus=corpus)
+    form = MainForm(corpus=corpus, source=request.GET.get('source'))
     return render(request, 'home.html', dict(corpus=corpus, form=form))
 
 
@@ -72,6 +72,7 @@ def run(request):
         kwargs['outfile'] = outfile
         kwargs['file_limit'] = form.cleaned_data.get('file_limit', 0)
         kwargs['output'] = form.cleaned_data.get('output_format')
+        kwargs['file_names'] = form.cleaned_data['documents']
 
         corpus = form.cleaned_data['corpus']
         source = form.cleaned_data['source']

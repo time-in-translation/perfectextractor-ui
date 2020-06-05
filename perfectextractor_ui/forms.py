@@ -48,17 +48,30 @@ class MainForm(forms.Form):
         ('xml', 'XML')],
         help_text='Choose XML if the output is to be imported in TimeAlign')
 
-    def __init__(self, *args, **kwargs):
-        corpus = kwargs.pop('corpus') if 'corpus' in kwargs else None
+    def add_corpus_fields(self, corpus, source):
+        if source:
+            self.fields['source'].initial = source
+        elif self.is_bound:
+            source = self.clean_field('source')
+        else:
+            source = corpus.sources[0]
+
+        documents = corpus.list_documents(source)
+
+        alignments = corpus.sources
+        self.fields['alignment'] = forms.MultipleChoiceField(choices=zip(alignments, alignments))
+        self.fields['documents'] = forms.MultipleChoiceField(choices=zip(documents, documents), required=False)
+
+    def __init__(self, *args, corpus=None, source=None, **kwargs):
         super().__init__(*args, **kwargs)
         if corpus:
             self.fields['corpus'].initial = corpus
-            self.fields['alignment'] = forms.MultipleChoiceField(choices=zip(corpus.sources, corpus.sources))
             self.fields['source'] = forms.ChoiceField(choices=zip(corpus.sources, corpus.sources))
+            self.add_corpus_fields(corpus, source)
         elif self.is_bound:
             corpus = self.clean_field('corpus')
-            self.fields['alignment'] = forms.MultipleChoiceField(choices=zip(corpus.sources, corpus.sources))
             self.fields['source'] = forms.ChoiceField(choices=zip(corpus.sources, corpus.sources))
+            self.add_corpus_fields(corpus, source)
 
     def clean_field(self, field):
         value = self.fields[field].widget.value_from_datadict(self.data, self.files, self.add_prefix(field))
