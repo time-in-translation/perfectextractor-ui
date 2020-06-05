@@ -67,7 +67,7 @@
     {% with field=form.pos %}
         <div class="col-md-3">
         <div class="form-group">
-          <button class="float-right btn btn-sm btn-primary add">+</button>
+          <button class="pull-right btn btn-xs btn-primary add">+</button>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>
@@ -76,7 +76,7 @@
     {% with field=form.lemmata %}
         <div class="col-md-3">
         <div class="form-group">
-          <button class="float-right btn btn-sm btn-primary add">+</button>
+          <button class="pull-right btn btn-xs btn-primary add">+</button>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>
@@ -85,7 +85,7 @@
     {% with field=form.regex %}
         <div class="col-md-3">
         <div class="form-group">
-          <button class="float-right btn btn-sm btn-primary add">+</button>
+          <button class="pull-right btn btn-xs btn-primary add">+</button>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>
