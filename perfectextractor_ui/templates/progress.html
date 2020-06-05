@@ -103,13 +103,20 @@
                      lines.push('<span>Type: ' + type + '</span>');
                      lines.push('<span>Words: ' + words + '</span>');
                      lines.push('</div><div class="preview-text">');
+                     lines.push('<span class="label label-primary">');
+                     lines.push(sourceLanguage);
+                     lines.push('</span> ');
                      lines.push(line[sourceLanguage].replace(wordsRe, '<strong>' + words + '</strong>'));
                      lines.push('</div>');
                      targetLanguages.forEach(function(language) {
                          lines.push('<div class="preview-text">');
+                         lines.push('<span class="label label-primary">');
+                         lines.push(language);
+                         lines.push('</span> ');
                          lines.push(line[language]);
-                         lines.push('</div></div>');
+                         lines.push('</div>');
                      });
+                     lines.push('</div>');
                  });
 
                  if (lastPeek && !lines.length) {
