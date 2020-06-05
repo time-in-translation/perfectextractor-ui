@@ -173,7 +173,11 @@
  // this is why I replace avoid generating a huge <select> with all options on the server,
  // use a smaller <select> with a limit on the number of options, and ask the user to use filters.
  var docSelect = document.getElementById('id_documents');
+ {% if form.documents %}
  var allDocuments = {{ form.documents.field.choices | safe }};
+ {% else %}
+ var allDocuments = [];
+ {% endif %}
  var documentsFilter = document.getElementById('id_documents_filter');
  var activeFilter = '';
  if(documentsFilter) {
