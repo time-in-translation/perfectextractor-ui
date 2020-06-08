@@ -39,9 +39,12 @@ class Corpus(models.Model):
     @property
     def sources(self):
         sources = []
-        for d in os.listdir(self.path):
-            if os.path.isdir(os.path.join(self.path, d)):
-                sources.append(d)
+        try:
+            for d in os.listdir(self.path):
+                if os.path.isdir(os.path.join(self.path, d)):
+                    sources.append(d)
+        except FileNotFoundError:
+            pass
 
         return sorted(sources)
 

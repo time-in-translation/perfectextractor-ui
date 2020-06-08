@@ -10,7 +10,21 @@
  #id_documents {
      height: 350px;
  }
+
+ .error {
+     background: #fcc;
+     color: #701;
+     padding: 1em;
+ }
 </style>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
 
 <h1>Run Extraction</h1>
 {% if form.errors %}
@@ -47,7 +61,7 @@
         </div>
     </div>
     {% endwith %}
-    {% if corpus %}
+    {% if form.source %}
     {% with field=form.source %}
         <div class="col-md-3">
         <div class="form-group">
@@ -64,6 +78,7 @@
         </div>
         </div>
     {% endwith %}
+    {% if form.documents %}
     {% with field=form.documents %}
         <div class="col-md-6">
         <div class="form-group">
@@ -76,10 +91,11 @@
             <label for="documents_filter">Filter documents by name</label>
             <input type="text" id="id_documents_filter" class="form-control" />
         </div>
-        <div id="documents_filter_count"></div>
-        <div id="documents_selected_count"></div>
+        <p id="documents_filter_count"></p>
+        <p id="documents_selected_count">None selected</p>
         </div>
     {% endwith %}
+    {% endif %}
     {% endif %}
   </div>
   <h4>Query</h4>
@@ -180,7 +196,7 @@
  {% endif %}
  var documentsFilter = document.getElementById('id_documents_filter');
  var activeFilter = '';
- if(documentsFilter) {
+ if(docSelect) {
      var limit = 100;
      function updateOptions(options) {
          var buffer = [];
@@ -204,7 +220,7 @@
      function updateSelectedCount() {
          var selected = docSelect.querySelectorAll('option:checked');
          if(selected.length) {
-             document.getElementById('documents_selected_count').innerHTML = '<br>Selected: ' + selected.length;
+             document.getElementById('documents_selected_count').innerHTML = 'Selected: ' + selected.length;
          }
      }
 

@@ -16,12 +16,17 @@ from perfectextractor.corpora.europarl.extractor import EuroparlPerfectExtractor
 @login_required
 def home(request):
     corpus = None
-    if 'corpus' in request.GET and request.GET['corpus']:
+    form = MainForm()
+    if request.GET.get('corpus') is not None:
         try:
             corpus = Corpus.objects.get(pk=request.GET['corpus'])
+            if len(corpus.sources) < 1:
+                messages.error(request, f'Corpus files for {corpus.title} not accessible, please check configuration')
+            else:
+                form = MainForm(corpus=corpus, source=request.GET.get('source'))
         except Corpus.DoesNotExist:
             pass
-    form = MainForm(corpus=corpus, source=request.GET.get('source'))
+
     return render(request, 'home.html', dict(corpus=corpus, form=form))
 
 
