@@ -36,9 +36,10 @@
  }
 </style>
 
-<div>
+<p>
   Processed <span class="processed">0</span> files out of <span class="total">-</span>
-</div>
+</p>
+<p id="results_count"></p>
 <div class="progress">
     <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
 </div>
@@ -122,6 +123,8 @@
                      });
                      lines.push('</div>');
                  });
+
+                 document.getElementById('results_count').innerHTML = 'Contexts found: ' + response.results.toLocaleString();
 
                  if (lastPeek && !lines.length) {
                      noResults();

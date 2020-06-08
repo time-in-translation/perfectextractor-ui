@@ -116,11 +116,17 @@ def csv_to_records(path, limit=10, delimiter=';'):
         return [dict((headers[i], line[i]) for i in range(len(line))) for line in data]
 
 
+def count_results(path):
+    with open(path, encoding='utf-8-sig') as f:
+        return sum(1 for line in f)
+
+
 @login_required
 def peek(request, task_id):
     outfile = Task.objects.get(pk=task_id).outfile
     head = csv_to_records(outfile)
-    return JsonResponse(dict(head=head))
+    results = count_results(outfile)
+    return JsonResponse(dict(head=head, results=results))
 
 
 @login_required
