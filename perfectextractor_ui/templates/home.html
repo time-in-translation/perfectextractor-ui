@@ -195,7 +195,9 @@
  var allDocuments = [];
  {% if form.documents %}
  allDocuments = {{ form.documents.field.choices | safe }};
+ {% if form.documents.value %}
  selectedDocuments = {{ form.documents.value | safe }};
+ {% endif %}
  {% endif %}
  var documentsFilter = document.getElementById('id_documents_filter');
  var activeFilter = '';
@@ -227,7 +229,7 @@
          }
      }
 
-     if(selectedDocuments) {
+     if(selectedDocuments.length) {
          updateOptions(selectedDocuments);
          docSelect.querySelectorAll('option').forEach(function (element) {
              element.selected = true;
