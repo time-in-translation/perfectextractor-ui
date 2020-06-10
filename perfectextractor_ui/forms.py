@@ -77,3 +77,7 @@ class MainForm(forms.Form):
     def clean_field(self, field):
         value = self.fields[field].widget.value_from_datadict(self.data, self.files, self.add_prefix(field))
         return self.fields[field].clean(value)
+
+
+class ImportQueryForm(forms.Form):
+    query_file = forms.FileField(label='Query file', widget=forms.FileInput(attrs=dict(accept='application/json')))

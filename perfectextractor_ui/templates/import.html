@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<form enctype="multipart/form-data" action="{% url 'perfectextractor_ui:import_query' %}" method="post">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+      {{ form }}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Load" />
+      </div>
+    </div>
+  </div>
+  {% csrf_token %}
+</form>
+{% endblock %}

@@ -1,13 +1,14 @@
 import csv
+import json
 import tempfile
 import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, QueryDict
 from django.shortcuts import render
 from django.forms import ValidationError
 
-from .forms import MainForm
+from .forms import MainForm, ImportQueryForm
 from .models import Corpus, Task
 from .tasks import tasks
 from perfectextractor.corpora.europarl.extractor import EuroparlPerfectExtractor, EuroparlPoSExtractor
@@ -87,10 +88,17 @@ def run(request):
         path = os.path.join(corpus.path, source)
         task_id = tasks.add(run_task, (extractor, path))
         Task.objects.filter(pk=task_id).update(outfile=outfile)
+
+        # prepare POST query string for json export
+        query = request.POST.copy()
+        query.pop('csrfmiddlewaretoken')
+        query_json = json.dumps(dict(query=query.urlencode()))
+
         return render(request, 'progress.html', dict(task_id=task_id,
                                                      source=source,
                                                      output_format=kwargs['output'],
-                                                     alignment=alignment))
+                                                     alignment=alignment,
+                                                     query_json=query_json))
     else:
         return render(request, 'home.html', dict(form=form))
 
@@ -142,3 +150,15 @@ def download(request, task_id):
 def cancel(request, task_id):
     tasks.cancel(task_id)
     return JsonResponse(dict(success=True))
+
+
+@login_required
+def import_query(request):
+    if 'query_file' in request.FILES:
+        query = QueryDict(json.load(request.FILES['query_file'])['query'])
+        corpus = Corpus.objects.get(pk=query['corpus'])
+        form = MainForm(query, corpus=corpus)
+        return render(request, 'home.html', dict(corpus=corpus, form=form))
+    else:
+        form = ImportQueryForm()
+        return render(request, 'import.html', dict(form=form))

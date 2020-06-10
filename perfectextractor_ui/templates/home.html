@@ -26,6 +26,8 @@
 </div>
 {% endif %}
 
+<a id="show_import" href="{% url 'perfectextractor_ui:import_query' %}" class="pull-right">Load saved query</a>
+
 <h1>Run Extraction</h1>
 {% if form.errors %}
     {% for field in form %}
@@ -189,10 +191,11 @@
  // this is why I replace avoid generating a huge <select> with all options on the server,
  // use a smaller <select> with a limit on the number of options, and ask the user to use filters.
  var docSelect = document.getElementById('id_documents');
- {% if form.documents %}
- var allDocuments = {{ form.documents.field.choices | safe }};
- {% else %}
+ var selectedDocuments = [];
  var allDocuments = [];
+ {% if form.documents %}
+ allDocuments = {{ form.documents.field.choices | safe }};
+ selectedDocuments = {{ form.documents.value | safe }};
  {% endif %}
  var documentsFilter = document.getElementById('id_documents_filter');
  var activeFilter = '';
@@ -224,7 +227,16 @@
          }
      }
 
-     updateOptions(allDocuments.slice(0, limit));
+     if(selectedDocuments) {
+         updateOptions(selectedDocuments);
+         docSelect.querySelectorAll('option').forEach(function (element) {
+             element.selected = true;
+         });
+         updateSelectedCount();
+     }
+     else {
+         updateOptions(allDocuments.slice(0, limit));
+     }
      documentsFilter.addEventListener('keyup', function(event) {
          if(event.target.value !== activeFilter) {
              activeFilter = event.target.value;

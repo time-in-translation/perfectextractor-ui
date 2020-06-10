@@ -14,5 +14,6 @@ urlpatterns = [
     path('peek/<int:task_id>', views.peek, name='peek'),
     path('cancel/<int:task_id>', views.cancel, name='cancel'),
     path('download/<int:task_id>', views.download, name='download'),
+    path('import_query', views.import_query, name='import_query'),
     path('admin/', admin.site.urls),
 ] + static('/static/', document_root=settings.STATIC_ROOT)
