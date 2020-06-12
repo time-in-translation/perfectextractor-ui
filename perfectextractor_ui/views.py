@@ -25,11 +25,24 @@ def home(request):
                 if len(corpus.sources) < 1:
                     messages.error(request, f'Corpus files for {corpus.title} not accessible, please check configuration')
                 else:
-                    form = MainForm(corpus=corpus, source=request.GET.get('source'))
+                    form = partially_filled_form(request.GET, corpus)
         except Corpus.DoesNotExist:
             pass
 
     return render(request, 'home.html', dict(corpus=corpus, form=form))
+
+
+def partially_filled_form(params, corpus):
+    initial = params.dict()
+    # unfortunately we need to manually specify parameters which are lists
+    for param in ['pos', 'lemmata', 'regex']:
+        initial[param] = params.getlist(param)
+
+    # we send a parial form when the user changes corpus or source
+    # in either case, they will have to choose new documents
+    del initial['documents']
+
+    return MainForm(initial=initial, corpus=corpus, source=params.get('source'))
 
 
 def run_task(result_cb, extractor, path):

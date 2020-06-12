@@ -44,7 +44,7 @@
     {% endfor %}
 {% endif %}
 
-<form action="{% url 'perfectextractor_ui:run' %}" method="post">
+<form name="extraction" action="{% url 'perfectextractor_ui:run' %}" method="post">
   <h4>Data Source</h4>
   <div class="row">
     {% with field=form.corpus %}
@@ -177,13 +177,13 @@
  });
 
  document.getElementById('id_corpus').addEventListener('change', function(event) {
-     setQuery('corpus', event.target.value);
+     sendPartialForm();
  });
 
  var sourceSelect = document.getElementById('id_source');
  if(sourceSelect) {
      sourceSelect.addEventListener('change', function(event) {
-         setQuery('source', event.target.value);
+         sendPartialForm();
      });
  }
 
@@ -254,18 +254,12 @@
      });
  }
 
- function setQuery(argument, value) {
-     var query = window.location.search.substring(1);
-     var parts = query.split('&');
-     var newQuery = [];
-     for(var i=0; i<parts.length; i++) {
-         var split = parts[i].split('=');
-         if(split[0] == argument) continue;
-         newQuery.push(parts[i]);
-     }
-
-     newQuery.push(argument + '=' + value);
-     window.location.search = '?' + newQuery.join('&');
+ function sendPartialForm() {
+     var form = document.forms.extraction;
+     form.method = 'get';
+     form.action = '{% url "perfectextractor_ui:home" %}';
+     form.csrfmiddlewaretoken.remove();
+     form.submit();
  }
 
  function parseListFields() {
