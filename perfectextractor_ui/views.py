@@ -20,11 +20,12 @@ def home(request):
     form = MainForm()
     if request.GET.get('corpus') is not None:
         try:
-            corpus = Corpus.objects.get(pk=request.GET['corpus'])
-            if len(corpus.sources) < 1:
-                messages.error(request, f'Corpus files for {corpus.title} not accessible, please check configuration')
-            else:
-                form = MainForm(corpus=corpus, source=request.GET.get('source'))
+            if request.GET['corpus'].isdigit():
+                corpus = Corpus.objects.get(pk=request.GET['corpus'])
+                if len(corpus.sources) < 1:
+                    messages.error(request, f'Corpus files for {corpus.title} not accessible, please check configuration')
+                else:
+                    form = MainForm(corpus=corpus, source=request.GET.get('source'))
         except Corpus.DoesNotExist:
             pass
 
