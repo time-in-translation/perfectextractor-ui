@@ -40,7 +40,8 @@ def partially_filled_form(params, corpus):
 
     # we send a parial form when the user changes corpus or source
     # in either case, they will have to choose new documents
-    del initial['documents']
+    if 'documents' in initial:
+        del initial['documents']
 
     return MainForm(initial=initial, corpus=corpus, source=params.get('source'))
 
