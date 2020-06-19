@@ -1,4 +1,4 @@
-from setuptools import setup
+import setuptools
 
 
 def readme():
@@ -6,9 +6,9 @@ def readme():
         return f.read()
 
 
-setup(
+setuptools.setup(
     name='perfectextractor-ui',
-    version='0.1.1',
+    version='0.1.2',
     author='Ben Bonfil',
     author_email='bonfil@gmail.com',
     description='A web frontend for perfectextractor',
@@ -23,7 +23,7 @@ setup(
     ],
     url='https://github.com/time-in-translation/perfectextractor-ui',
     license='MIT',
-    packages=['perfectextractor_ui'],
+    packages=setuptools.find_packages(),
     python_requires='>=3.6',
     install_requires=['django-widget-tweaks',
                       'perfectextractor'])
