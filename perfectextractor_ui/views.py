@@ -1,4 +1,5 @@
 import csv
+import itertools
 import json
 import tempfile
 import os
@@ -131,11 +132,7 @@ def csv_to_records(path, limit=10, delimiter=';'):
         except StopIteration:
             return []
 
-        data = []
-        try:
-            data = [next(reader) for i in range(limit)]
-        except StopIteration:
-            pass
+        data = itertools.islice(reader, limit)
         return [dict((headers[i], line[i]) for i in range(len(line))) for line in data]
 
 
