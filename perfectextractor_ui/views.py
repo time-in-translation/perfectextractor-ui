@@ -57,7 +57,7 @@ def run_task(result_cb, extractor, path):
 def resolve_extractor(extractor):
     return {
         'pos': (EuroparlPoSExtractor, {'pos', 'lemmata', 'regex'}),
-        'perfect': (EuroparlPerfectExtractor, {})}[extractor]
+        'perfect': (EuroparlPerfectExtractor, {'lemmata'})}[extractor]
 
 
 def prepare_query(form, arguments):
