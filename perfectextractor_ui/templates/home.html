@@ -88,7 +88,7 @@
             <select id="{{field.auto_id}}" name="{{field.name}}" class="form-control" multiple></select>
         </div>
         </div>
-        <div class="col-md-6" >
+        <div class="col-md-6">
         <div class="form-group">
             <label for="documents_filter">Filter documents by name</label>
             <input type="text" id="id_documents_filter" class="form-control" />
@@ -273,6 +273,23 @@
          }
      });
  }
+
  parseListFields();
+
+ function updateFilters() {
+     function disable(element) { element.disabled = true; }
+     function enable(element) { element.disabled = false; }
+     if(document.querySelector('#id_extractor').value == 'pos') {
+         document.querySelectorAll('#id_pos').forEach(enable);
+         document.querySelectorAll('#id_regex').forEach(enable);
+     }
+     else {
+         document.querySelectorAll('#id_pos').forEach(disable);
+         document.querySelectorAll('#id_regex').forEach(disable);
+     }
+ }
+
+ document.querySelector('#id_extractor').addEventListener('change', updateFilters);
+ updateFilters();
 </script>
 {% endblock %}
