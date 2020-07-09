@@ -174,3 +174,7 @@ def import_query(request):
     else:
         form = ImportQueryForm()
         return render(request, 'import.html', dict(form=form))
+
+
+def help(request):
+    return render(request, 'help.html')

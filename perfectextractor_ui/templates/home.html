@@ -16,6 +16,10 @@
      color: #701;
      padding: 1em;
  }
+
+ .help {
+     margin-right: 5px;
+ }
 </style>
 
 {% if messages %}
@@ -106,6 +110,9 @@
         <div class="col-md-3">
         <div class="form-group">
           <button class="pull-right btn btn-xs btn-primary add">+</button>
+          <a href="{% url 'perfectextractor_ui:help'%}#{{field.name}}"
+             target="_new"
+             class="btn btn-xs btn-default pull-right help">?</a>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>
@@ -124,6 +131,9 @@
         <div class="col-md-3">
         <div class="form-group">
           <button class="pull-right btn btn-xs btn-primary add">+</button>
+          <a href="{% url 'perfectextractor_ui:help'%}#{{field.name}}"
+             target="_new"
+             class="btn btn-xs btn-default pull-right help">?</a>
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:"form-control"|add_class:"maybe-list" }}
         </div>

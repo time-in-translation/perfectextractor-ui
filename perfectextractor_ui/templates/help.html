@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h1>PerfectExtractor Manual</h1>
+<section id="filters">
+<h3>Query Filters</h3>
+    <section id="pos">
+        <h4>Part-of-speech tags</h4>
+        Used to filter results based on part-of-speech tags as annotated in the corpus source files. Tags may vary between corpora and languages.
+    </section>
+    <section id="regex">
+        <h4>Regular Expressions</h4>
+        Filter results using a <a href="https://en.wikipedia.org/wiki/Regular_expressio">regular expression</a> that is applied on a word level. Regular expressions should be
+        given in Python's regular expression syntax and are case-insensitive. More information can be found in the <a href="https://docs.python.org/3.8/library/re.html">official documentation</a>. See also <a href="https://pythex.org/">pythex</a> and <a href="https://www.regexpal.com/">regexpal</a> for interactive experimentation with regular expressions.
+        <h5>Examples:</h5>
+        <dl>
+          <dt>^wh</dt><dd>matches all words beginning with <em>wh</em></dd>
+          <dt>ly$</dt><dd>matches all words ending with <em>ly</em></dd>
+          <dt>^ha(s|ve)$</dt><dd>matches either <em>has</em> or <em>have</em></dd>
+        </dl>
+    </section>
+</section>
+{% endblock %}
