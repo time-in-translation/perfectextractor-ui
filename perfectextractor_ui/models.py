@@ -50,7 +50,8 @@ class Corpus(models.Model):
 
     def list_documents(self, language):
         docs = []
-        for f in os.listdir(os.path.join(self.path, language)):
-            docs.append(f)
+        if os.path.exists(os.path.join(self.path, language)):
+            for f in os.listdir(os.path.join(self.path, language)):
+                docs.append(f)
 
         return sorted(docs)
