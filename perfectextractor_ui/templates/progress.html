@@ -102,7 +102,6 @@
                  response.head.forEach(function(line) {
                      var type = line['type ' + sourceLanguage];
                      var words = line['words ' + sourceLanguage];
-                     var wordsRe = new RegExp('\\b' + words + '\\b');
                      lines.push('<div class="preview-entry"><div class="preview-metadata">');
                      lines.push('<span>Document: ' + line.document + '</span>');
                      lines.push('<span>Sentence: ' + line.sentence + '</span>');
@@ -112,7 +111,8 @@
                      lines.push('<span class="label label-primary">');
                      lines.push(sourceLanguage);
                      lines.push('</span> ');
-                     lines.push(line[sourceLanguage].replace(wordsRe, '<strong>' + words + '</strong>'));
+                     var lineWithBold = line[sourceLanguage].replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                     lines.push(lineWithBold);
                      lines.push('</div>');
                      targetLanguages.forEach(function(language) {
                          lines.push('<div class="preview-text">');
