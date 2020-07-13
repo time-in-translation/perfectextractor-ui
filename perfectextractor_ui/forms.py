@@ -41,6 +41,8 @@ class MainForm(forms.Form):
     pos = PossiblyMultipleCharField(required=False, label='Part-of-speech tag')
     lemmata = PossiblyMultipleCharField(required=False)
     regex = PossiblyMultipleCharField(required=False, label='Regular Expression')
+    position = forms.IntegerField(required=False, label='Word position in sentence',
+                                  min_value=1)
 
     file_limit = forms.IntegerField(required=False, label='Limit search to X files', initial=25)
     output_format = forms.ChoiceField(choices=[

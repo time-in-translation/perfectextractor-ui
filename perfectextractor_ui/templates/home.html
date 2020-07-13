@@ -139,6 +139,15 @@
         </div>
         </div>
     {% endwith %}
+    {% with field=form.position %}
+        <div class="col-md-3">
+        <div class="form-group">
+          <button class="pull-right btn btn-xs btn-primary add">+</button>
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control"|add_class:"maybe-list" }}
+        </div>
+        </div>
+    {% endwith %}
   </div>
   <h4>Options</h4>
   <div class="row">

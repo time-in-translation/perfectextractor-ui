@@ -75,6 +75,9 @@ def prepare_query(form, arguments):
                 entries = [entries]
             kwargs[key] = [entry for entry in entries if entry]
 
+    if form.cleaned_data['position']:
+        kwargs['position'] = form.cleaned_data['position']
+
     if any_error:
         return dict(), False
     return kwargs, True
