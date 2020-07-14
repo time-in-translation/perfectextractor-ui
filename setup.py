@@ -8,7 +8,7 @@ def readme():
 
 setuptools.setup(
     name='perfectextractor-ui',
-    version='0.1.3',
+    version='0.1.4',
     author='Ben Bonfil',
     author_email='bonfil@gmail.com',
     description='A web frontend for perfectextractor',
