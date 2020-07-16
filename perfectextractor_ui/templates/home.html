@@ -186,6 +186,7 @@
      event.preventDefault();
  }
  function duplicateField(element, value) {
+     if (element.disabled) return;
      var clone = element.cloneNode();
      clone.value = value;
      element.parentNode.appendChild(clone);
