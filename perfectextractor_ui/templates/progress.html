@@ -50,6 +50,7 @@
 <a class="btn btn-primary" id="download" href="#">Download</a>
 <div id="preview">
     <h3>Preview</h3>
+    <p id="preview_desc"></p>
     <div id="preview_content"></div>
 </div>
 <div id="no_results">
@@ -131,8 +132,12 @@
                      noResults();
                  }
                  else if (lines.length) {
-                    document.getElementById('preview').style.display = 'block';
-                    document.getElementById('preview_content').innerHTML = lines.join('');
+                     document.getElementById('preview').style.display = 'block';
+                     var desc = 'Displaying ' + response.head.length;
+                     if (response.head.length < response.results) { desc += ' first'; }
+                     desc += ' results:';
+                     document.getElementById('preview_desc').innerHTML = desc;
+                     document.getElementById('preview_content').innerHTML = lines.join('');
                  }
      });
  }
