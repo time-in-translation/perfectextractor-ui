@@ -140,8 +140,7 @@ def csv_to_records(path, limit=10, delimiter=';'):
 
 
 def count_results(path):
-    with open(path, encoding='utf-8-sig') as f:
-        return sum(1 for line in f) - 1
+    return len(csv_to_records(path, limit=None))
 
 
 @login_required
