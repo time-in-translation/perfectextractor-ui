@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import TemplateView
 
@@ -16,5 +15,4 @@ urlpatterns = [
     path('download/<int:task_id>', views.download, name='download'),
     path('import_query', views.import_query, name='import_query'),
     path('help', views.help, name='help'),
-    path('admin/', admin.site.urls),
 ] + static('/static/', document_root=settings.STATIC_ROOT)
