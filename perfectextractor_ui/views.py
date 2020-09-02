@@ -9,11 +9,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse, QueryDict
 from django.shortcuts import render
 
-from perfectextractor.corpora.opus.extractor import OPUSPerfectExtractor, OPUSPoSExtractor
+from perfectextractor.corpora.opus.pos import OPUSPoSExtractor
+from perfectextractor.corpora.opus.perfect import OPUSPerfectExtractor
 
 from .forms import MainForm, ImportQueryForm
 from .models import Corpus, Task
 from .tasks import tasks
+
 
 @login_required
 def home(request):
@@ -56,8 +58,8 @@ def run_task(result_cb, extractor, path):
 
 def resolve_extractor(extractor):
     return {
-        'pos': (EuroparlPoSExtractor, {'pos', 'lemmata', 'regex'}),
-        'perfect': (EuroparlPerfectExtractor, {'lemmata'})}[extractor]
+        'pos': (OPUSPoSExtractor, {'pos', 'lemmata', 'regex'}),
+        'perfect': (OPUSPerfectExtractor, {'lemmata'})}[extractor]
 
 
 def prepare_query(form, arguments):
