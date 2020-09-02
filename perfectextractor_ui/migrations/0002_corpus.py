@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100)),
                 ('path', models.FilePathField(allow_files=False, allow_folders=True, path='/media/bignux/', recursive=True)),
                 ('is_public', models.BooleanField()),
-                ('source_format', models.CharField(choices=[('europarl', 'europarl'), ('bnc', 'bnc'), ('dpc', 'dpc')], max_length=100)),
+                ('source_format', models.CharField(choices=[('opus', 'opus'), ('bnc', 'bnc'), ('dpc', 'dpc')], max_length=100)),
             ],
             options={
                 'verbose_name_plural': 'Corpora',

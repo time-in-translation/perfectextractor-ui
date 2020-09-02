@@ -26,7 +26,7 @@ class Corpus(models.Model):
                                 allow_files=False)
     is_public = models.BooleanField()
     source_format = models.CharField(max_length=100,
-                                     choices=[('europarl', 'europarl'),
+                                     choices=[('opus', 'opus'),
                                               ('bnc', 'bnc'),
                                               ('dpc', 'dpc')])
 
