@@ -11,7 +11,7 @@ click==7.1.2              # via perfectextractor
 django-widget-tweaks==1.4.8  # via -r requirements.in
 django==3.1.1             # via -r requirements.in
 idna==2.10                # via requests
-lxml==4.5.2               # via perfectextractor
+lxml==4.6.2               # via perfectextractor
 perfectextractor==0.4     # via -r requirements.in
 pytz==2020.1              # via django
 requests==2.24.0          # via perfectextractor
