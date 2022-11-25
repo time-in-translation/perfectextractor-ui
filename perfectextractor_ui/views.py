@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse, QueryDict
 from django.shortcuts import render
 
+from perfectextractor.corpora.opus.extractor import OPUSExtractor
 from perfectextractor.corpora.opus.pos import OPUSPoSExtractor
 from perfectextractor.corpora.opus.perfect import OPUSPerfectExtractor
 
@@ -58,6 +59,7 @@ def run_task(result_cb, extractor, path):
 
 def resolve_extractor(extractor):
     return {
+        'base': (OPUSExtractor, {}),
         'pos': (OPUSPoSExtractor, {'pos', 'lemmata', 'regex'}),
         'perfect': (OPUSPerfectExtractor, {'lemmata'})}[extractor]
 

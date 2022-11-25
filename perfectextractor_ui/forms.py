@@ -35,6 +35,7 @@ class PossiblyMultipleCharField(forms.CharField):
 class MainForm(forms.Form):
     corpus = forms.ModelChoiceField(Corpus.objects.all())
     extractor = forms.ChoiceField(choices=[
+        ('base', 'base'),
         ('pos', 'pos'),
         ('perfect', 'perfect')])
     pos = PossiblyMultipleCharField(required=False, label='Part-of-speech tag')
